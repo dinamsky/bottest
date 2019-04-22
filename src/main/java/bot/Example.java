@@ -8,6 +8,12 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import parser.Feed;
+import parser.FeedMessage;
+import parser.RSSFeedParser;
+import parser.WeatherParser;
+
+import java.io.IOException;
 
 public class Example extends TelegramLongPollingBot {
 
@@ -35,7 +41,21 @@ public class Example extends TelegramLongPollingBot {
         if (txt.equals("/info")) {
             this.sendMsg(msg, "Soon here'll be some interesting service! for more info you can go direct on http://fakenewsbot.online");
         }
-    }
+        if (txt.equals("/weather")) {
+
+            RSSFeedParser parser = new RSSFeedParser(
+                    "https://habr.com/ru/rss/");
+            Feed feed = parser.readFeed();
+            System.out.println(feed);
+            for (FeedMessage message : feed.getMessages()) {
+                this.sendMsg(msg, message.toString());
+
+
+            }
+            if (txt.equals("/help")) {
+                sendMsg(msg, "Hello, world! This is Fake News bot!");
+            }
+        }}
 
     @Override
     public String getBotToken() {
